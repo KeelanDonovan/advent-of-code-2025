@@ -20,6 +20,9 @@ In 811111111111119, 89.
 In 234234234234278, 78.
 In 818181911112111, 92.
 98 + 89 + 78 + 92 = 357.
+
+Part 2:
+12 digit number same rules apply
 '''
 
 class JoltageMaximizer:
@@ -28,6 +31,32 @@ class JoltageMaximizer:
     self.banks=self._get_banks_from_path()
     self.max_joltages_basic=self._get_max_voltages_basic()
     self.total_joltage=self._sum_max_joltages(self.max_joltages_basic)
+    self.max_joltages_adv=self._get_max_voltages_advanced()
+    self.total_jotage_adv=self._sum_max_joltages(self.max_joltages_adv)
+    
+  def _get_max_voltages_advanced(self) -> list[int]:
+    max_joltages = []
+    try:
+      for bank in self.banks:
+        n = len(bank)
+        best_joltages = bank[n-12:]
+        for i in range(n-13, -1, -1):
+          if bank[i] >= best_joltages[0]:
+            best_joltages.insert(0, bank[i])
+            for i in range(1, len(best_joltages)):
+              if i == len(best_joltages)-1:
+                del best_joltages[i]
+                break
+              elif best_joltages[i] < best_joltages[i+1]:
+                del best_joltages[i]
+                break
+        max_joltages.append(int("".join([str(x) for x in best_joltages])))
+      print(max_joltages)  
+      return max_joltages
+      
+    except Exception as e:
+      print("Error processing banks for max volatages (advanced):", e)
+      return
     
   def _sum_max_joltages(self, joltages: list[int]) -> int:
     return sum(joltages)
@@ -77,6 +106,8 @@ if __name__ == "__main__":
   args = parser.parse_args()
   maximizer = JoltageMaximizer(path=args.filepath)
   print("Total Voltage:", maximizer.total_joltage)
+  print("Total Voltage:", maximizer.total_jotage_adv)
+  
       
     
     
