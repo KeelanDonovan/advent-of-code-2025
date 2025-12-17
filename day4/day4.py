@@ -34,21 +34,26 @@ def get_floor_plan(file_path: Path) -> list[list[str]]:
     return
   
 def calc_forklift_access_cnt(floor_plan:list[list[str]]) -> int:
+  new_plan = floor_plan
   count = 0
-  for row_idx, aisle in enumerate(floor_plan):
-    for col_idx, symbol in enumerate(aisle):
-      if symbol != '@':
-        continue
-      num_surrounding = 0
-      for i in range (row_idx-1, row_idx + 2):
-        for j in range (col_idx-1, col_idx + 2):
-          print(i, j)
-          if i < 0 or i >= len(floor_plan) or j < 0 or j >= len(aisle) or (i == row_idx and j == col_idx):
-            continue
-          if floor_plan[i][j] == '@':
-            num_surrounding += 1
-      if num_surrounding < 4:
-        count +=1
+  removing = True
+  while(removing):
+    removing = False
+    for row_idx, aisle in enumerate(floor_plan):
+      for col_idx, symbol in enumerate(aisle):
+        if symbol != '@':
+          continue
+        num_surrounding = 0
+        for i in range (row_idx-1, row_idx + 2):
+          for j in range (col_idx-1, col_idx + 2):
+            if i < 0 or i >= len(floor_plan) or j < 0 or j >= len(aisle) or (i == row_idx and j == col_idx):
+              continue
+            if floor_plan[i][j] == '@':
+              num_surrounding += 1
+        if num_surrounding < 4:
+          count +=1
+          new_plan[row_idx][col_idx] = 'x'
+          removing = True
   return count
   
 
