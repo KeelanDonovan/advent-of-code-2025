@@ -23,21 +23,20 @@ Part 1:
 import argparse
 from pathlib import Path
 
-def get_floor_plan(file_path: Path) -> list[list[str]]:
+def get_floor_plan(file_path: Path) -> list[list[str]] | None:
   floor_plan: list[list[str]] = []
   try:
     with open(file=file_path, mode="r") as f:
-      floor_plan = [list(line) for line in f.read().strip().split("\n")]
+      floor_plan = [list(line) for line in f.read().splitlines()]
       return floor_plan
   except FileNotFoundError as e:
     print("Error while getting floor plan from file: ", e)
     return
   
-def calc_forklift_access_cnt(floor_plan:list[list[str]]) -> int:
-  new_plan = floor_plan
+def calc_forklift_access_cnt(floor_plan: list[list[str]]) -> int:
   count = 0
   removing = True
-  while(removing):
+  while removing:
     removing = False
     for row_idx, aisle in enumerate(floor_plan):
       for col_idx, symbol in enumerate(aisle):
@@ -46,13 +45,13 @@ def calc_forklift_access_cnt(floor_plan:list[list[str]]) -> int:
         num_surrounding = 0
         for i in range (row_idx-1, row_idx + 2):
           for j in range (col_idx-1, col_idx + 2):
-            if i < 0 or i >= len(floor_plan) or j < 0 or j >= len(aisle) or (i == row_idx and j == col_idx):
+            if i < 0 or i >= len(floor_plan) or j < 0 or j >= len(floor_plan[i]) or (i == row_idx and j == col_idx):
               continue
             if floor_plan[i][j] == '@':
               num_surrounding += 1
         if num_surrounding < 4:
-          count +=1
-          new_plan[row_idx][col_idx] = 'x'
+          count += 1
+          floor_plan[row_idx][col_idx] = 'x'
           removing = True
   return count
   
